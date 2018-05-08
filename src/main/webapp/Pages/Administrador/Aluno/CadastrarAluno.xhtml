@@ -1,0 +1,186 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">#{cadastroAlunoController.cadastrando ?
+			'Cadastro de ' : 'Editando '} Aluno</h1>
+
+		<h:form id="form" prependId="false">
+
+			<p:messages id="messages-dialog" />
+
+			<p:defaultCommand target="salvar-button" />
+
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<p:fieldset legend="Pessoal">
+						<p:panelGrid id="painel-pessoal-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8"
+							rendered="#{cadastroAlunoController.edicaoAluno != null}">
+
+							<p:outputLabel for="nome" value="Nome" />
+							<p:inputText id="nome"
+								value="#{cadastroAlunoController.edicaoAluno.nome}"
+								maxlength="120" />
+
+							<p:outputLabel for="rg" value="RG" />
+							<p:inputText id="rg"
+								value="#{cadastroAlunoController.edicaoAluno.rg}" maxlength="10" />
+
+							<p:outputLabel for="cpf" value="CPF" />
+							<p:inputMask id="cpf"
+								value="#{cadastroAlunoController.edicaoAluno.cpf}"
+								mask="999.999.999-99" converter="JsfCPFConverter" />
+
+							<p:outputLabel for="dtNascimento" value="Data de Nascimento" />
+							<p:calendar id="dtNascimento"
+								value="#{cadastroAlunoController.edicaoAluno.dtNascimento}"
+								pattern="dd/MM/yyyy" mask="true" navigator="true"
+								yearRange="c-100:c+0" showButtonPanel="true" showOn="button">
+								<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+							</p:calendar>
+
+							<p:outputLabel for="sexo" value="Sexo" />
+							<p:selectOneMenu id="sexo"
+								value="#{cadastroAlunoController.edicaoAluno.sexo}"
+								rendered="#{cadastroAlunoController.edicaoAluno != null}"
+								autoWidth="false">
+								<f:selectItem itemLabel="Selecione..." itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{cadastroAlunoController.sexo}"
+									var="sexo" itemLabel="#{sexo}" itemValue="#{sexo}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+				<div class="ui-g-12">
+					<p:fieldset legend="Contato">
+						<p:panelGrid id="painel-contato-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 5px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8"
+							rendered="#{cadastroAlunoController.edicaoAluno != null}">
+
+							<p:outputLabel for="email" value="E-mail" />
+							<p:inputText id="email"
+								value="#{cadastroAlunoController.edicaoAluno.email}" />
+
+						</p:panelGrid>
+						<p:panel id="telefone-panel" header="Telefones"
+							style="margin: 5px 5px">
+							<p:repeat var="tel" value="#{cadastroAlunoController.telefones}">
+								<p:panelGrid columns="3" layout="grid"
+									style="margin-top: 5px; margin-bottom: 5px;"
+									styleClass="panelgrid-noborder"
+									columnClasses="ui-grid-col-4, ui-grid-col-7, ui-grid-col-1">
+
+									<p:outputLabel for="telefone" value="Telefone" />
+									<p:inputMask id="telefone" value="#{tel.telefone}"
+										mask="(99) 9 9999-9999" autoClear="false"
+										converter="JsfTelefoneConverter" />
+
+									<p:commandButton
+										actionListener="#{cadastroAlunoController.removerTelefone(tel)}"
+										process="@this" update="telefone-panel" icon="fa fa-trash-o"
+										style="width: 18px;height: 18px;" />
+
+								</p:panelGrid>
+							</p:repeat>
+
+							<f:facet name="actions">
+								<p:commandButton
+									actionListener="#{cadastroAlunoController.adicionarTelefone()}"
+									process="@parent" update="telefone-panel" icon="fa fa-plus"
+									style="width: 18px;height: 18px;" />
+							</f:facet>
+						</p:panel>
+					</p:fieldset>
+				</div>
+				<div class="ui-g-12">
+					<p:fieldset legend="Endereço">
+						<p:panelGrid id="painel-endereco-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8"
+							rendered="#{cadastroAlunoController.edicaoAluno != null}">
+
+							<p:outputLabel for="cep" value="CEP" />
+							<p:inputMask id="cep"
+								value="#{cadastroAlunoController.edicaoAluno.endereco.cep}"
+								mask="99.999-999" converter="JsfCepConverter">
+								<p:ajax event="blur"
+									listener="#{cadastroAlunoController.buscarCep}"
+									update="painel-endereco-dialog" />
+							</p:inputMask>
+
+							<p:outputLabel for="logradouro" value="Logradouro" />
+							<p:inputText id="logradouro"
+								value="#{cadastroAlunoController.edicaoAluno.endereco.logradouro}" />
+
+							<p:outputLabel for="numero" value="Número" />
+							<p:inputNumber id="numero"
+								value="#{cadastroAlunoController.edicaoAluno.endereco.numero}"
+								decimalPlaces="0" converter="javax.faces.Short" />
+
+							<p:outputLabel for="complemento" value="Complemento" />
+							<p:inputText id="complemento"
+								value="#{cadastroAlunoController.edicaoAluno.endereco.complemento}" />
+
+							<p:outputLabel for="bairro" value="Bairro" />
+							<p:inputText id="bairro"
+								value="#{cadastroAlunoController.edicaoAluno.endereco.bairro}" />
+
+							<p:outputLabel for="uf" value="UF" />
+							<p:selectOneMenu id="uf"
+								value="#{cadastroAlunoController.estadoSelecionado}"
+								converter="JsfEstadoConverter">
+								<p:ajax
+									listener="#{cadastroAlunoController.buscarCidadesPeloEstado()}"
+									update="cidade" />
+								<f:selectItem itemLabel="Selecione..." itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{cadastroAlunoController.estados}"
+									var="estado" itemLabel="#{estado.sigla}" itemValue="#{estado}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="cidade" value="Cidade" />
+							<p:selectOneMenu id="cidade"
+								value="#{cadastroAlunoController.edicaoAluno.endereco.cidade}"
+								autoWidth="false" filter="true" filterMatchMode="contains"
+								converter="JsfCidadeConverter">
+								<f:selectItem itemLabel="Selecione..." itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{cadastroAlunoController.cidades}"
+									var="cidade" itemLabel="#{cidade.cidade}" itemValue="#{cidade}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="salvar-button" value="Salvar"
+						action="#{cadastroAlunoController.salvar()}" process="@form"
+						update="messages-dialog, painel-pessoal-dialog, painel-contato-dialog, painel-endereco-dialog"
+						icon="fa fa-save" />
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="voltar-button" value="Voltar"
+						action="Alunos.jsf?faces-redirect=true" process="@this"
+						icon="fa fa-mail-reply">
+						<p:confirm message="Deseja descartar as alterações e voltar?" />
+					</p:commandButton>
+				</div>
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

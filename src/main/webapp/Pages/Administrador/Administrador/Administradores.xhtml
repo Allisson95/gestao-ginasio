@@ -1,0 +1,102 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">Administradores</h1>
+
+		<h:form id="form">
+
+			<p:messages id="messages-dialog" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton value="Novo" icon="fa fa-user-plus"
+						action="#{administradorController.prepararNovoAdministrador()}" process="@this" />
+
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
+
+					<p:commandButton icon="fa fa-fw fa-edit" title="Editar"
+						action="#{administradorController.editarAdministrador()}" process="@this"
+						disabled="#{administradorController.administradorSelecionado == null}" />
+				</f:facet>
+
+			</p:toolbar>
+
+			<p:dataTable id="admins-table" widgetVar="admins-table" var="admin"
+				value="#{administradorController.administradores}"
+				emptyMessage="Nenhum administrador cadastrado." paginator="true" rows="10"
+				paginatorPosition="both"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" reflow="true"
+				selection="#{administradorController.administradorSelecionado}"
+				selectionMode="single" rowKey="#{admin.codigo}"
+				filteredValue="#{administradorController.administradoresFiltrados}"
+				style="margin-top: 10px">
+
+				<p:ajax event="rowSelect" update="form:toolbar" />
+				<p:ajax event="rowUnselect" update="form:toolbar" />
+
+				<p:column headerText="Matrícula"
+					filterBy="#{admin.usuario.matricula}" filterMatchMode="contains">
+					<h:outputText value="#{admin.usuario.matricula}" />
+				</p:column>
+
+				<p:column headerText="Nome" filterBy="#{admin.nome}"
+					filterMatchMode="contains">
+					<h:outputText value="#{admin.nome}" />
+				</p:column>
+
+				<p:column headerText="RG" filterBy="#{admin.rg}"
+					filterMatchMode="startsWith" width="150">
+					<h:outputText value="#{admin.rg}" />
+				</p:column>
+
+				<p:column headerText="CPF" filterBy="#{admin.cpf}"
+					filterMatchMode="startsWith" width="150">
+					<h:outputText value="#{admin.cpf}" converter="JsfCPFConverter" />
+				</p:column>
+
+				<p:column headerText="Sexo" filterBy="#{admin.sexo.descricao}"
+					filterMatchMode="equals" width="85">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('admins-table').filter()">
+							<f:selectItems var="s" value="#{administradorController.sexo}"
+								itemLabel="#{s.descricao.subSequence(0,1)}"
+								itemValue="#{s.descricao}" />
+						</p:selectOneButton>
+					</f:facet>
+					<h:outputText value="#{admin.sexo.descricao.subSequence(0,1)}" />
+				</p:column>
+
+				<p:column headerText="Nascimento" width="100">
+					<h:outputText value="#{admin.dtNascimento}">
+						<f:convertDateTime type="localDateTime" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Ativo" filterBy="#{admin.ativo}"
+					filterMatchMode="equals" width="150">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('admins-table').filter()">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="Sim" itemValue="true" />
+							<f:selectItem itemLabel="Não" itemValue="false" />
+						</p:selectOneButton>
+					</f:facet>
+					<p:inputSwitch value="#{admin.ativo}" onLabel="Sim" offLabel="Não">
+						<p:ajax update="form:messages-dialog"
+							listener="#{administradorController.alterarPropriedadeAtivo(admin)}" />
+					</p:inputSwitch>
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

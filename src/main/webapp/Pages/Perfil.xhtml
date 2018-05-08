@@ -1,0 +1,199 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">Perfil</h1>
+
+		<h:form id="form" prependId="false">
+
+			<p:messages id="messages-dialog" />
+
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<p:fieldset legend="Pessoal">
+						<p:panelGrid id="painel-pessoal-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8">
+
+							<p:outputLabel for="nome" value="Nome" />
+							<h:outputText id="nome"
+								value="#{perfilController.edicaoPessoa.nome}" />
+
+							<p:outputLabel for="rg" value="RG" />
+							<h:outputText id="rg" value="#{perfilController.edicaoPessoa.rg}" />
+
+							<p:outputLabel for="cpf" value="CPF" />
+							<h:outputText id="cpf"
+								value="#{perfilController.edicaoPessoa.cpf}"
+								converter="JsfCPFConverter" />
+
+							<p:outputLabel for="dtNascimento" value="Data de Nascimento" />
+							<h:outputText id="dtNascimento"
+								value="#{perfilController.edicaoPessoa.dtNascimento}">
+								<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+							</h:outputText>
+
+							<p:outputLabel for="sexo" value="Sexo" />
+							<h:outputText id="sexo"
+								value="#{perfilController.edicaoPessoa.sexo.descricao}" />
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+				<div class="ui-g-12">
+					<p:fieldset legend="Contato">
+						<p:panelGrid id="painel-contato-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 5px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8"
+							rendered="#{perfilController.edicaoPessoa != null}">
+
+							<p:outputLabel for="email" value="E-mail" />
+							<p:inputText id="email"
+								value="#{perfilController.edicaoPessoa.email}" />
+
+						</p:panelGrid>
+						<p:panel id="telefone-panel" header="Telefones"
+							style="margin: 5px 5px">
+							<p:repeat var="tel" value="#{perfilController.telefones}">
+								<p:panelGrid columns="3" layout="grid"
+									style="margin-top: 5px; margin-bottom: 5px;"
+									styleClass="panelgrid-noborder"
+									columnClasses="ui-grid-col-4, ui-grid-col-7, ui-grid-col-1">
+
+									<p:outputLabel for="telefone" value="Telefone" />
+									<p:inputMask id="telefone" value="#{tel.telefone}"
+										mask="(99) 9 9999-9999" autoClear="false"
+										converter="JsfTelefoneConverter" />
+
+									<p:commandButton
+										actionListener="#{perfilController.removerTelefone(tel)}"
+										process="@this" update="telefone-panel" icon="fa fa-trash-o"
+										style="width: 18px;height: 18px;" />
+
+								</p:panelGrid>
+							</p:repeat>
+
+							<f:facet name="actions">
+								<p:commandButton
+									actionListener="#{perfilController.adicionarTelefone()}"
+									update="telefone-panel" icon="fa fa-plus"
+									style="width: 18px;height: 18px;" />
+							</f:facet>
+						</p:panel>
+					</p:fieldset>
+				</div>
+				<div class="ui-g-12">
+					<p:fieldset legend="Endereço">
+						<p:panelGrid id="painel-endereco-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8">
+
+							<p:outputLabel for="cep" value="CEP" />
+							<p:inputMask id="cep"
+								value="#{perfilController.edicaoPessoa.endereco.cep}"
+								mask="99.999-999" converter="JsfCepConverter">
+								<p:ajax event="blur" listener="#{perfilController.buscarCep}"
+									update="form:painel-endereco-dialog" />
+							</p:inputMask>
+
+							<p:outputLabel for="logradouro" value="Logradouro" />
+							<p:inputText id="logradouro"
+								value="#{perfilController.edicaoPessoa.endereco.logradouro}"
+								required="true" />
+
+							<p:outputLabel for="numero" value="Número" />
+							<p:inputNumber id="numero"
+								value="#{perfilController.edicaoPessoa.endereco.numero}"
+								decimalPlaces="0" converter="javax.faces.Short" required="true" />
+
+							<p:outputLabel for="complemento" value="Complemento" />
+							<p:inputText id="complemento"
+								value="#{perfilController.edicaoPessoa.endereco.complemento}" />
+
+							<p:outputLabel for="bairro" value="Bairro" />
+							<p:inputText id="bairro"
+								value="#{perfilController.edicaoPessoa.endereco.bairro}" />
+
+							<p:outputLabel for="uf" value="UF" />
+							<p:selectOneMenu id="uf"
+								value="#{perfilController.estadoSelecionado}"
+								converter="JsfEstadoConverter">
+								<p:ajax listener="#{perfilController.buscarCidadesPeloEstado()}"
+									update="cidade" />
+								<f:selectItem itemLabel="Selecione..." itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{perfilController.estados}" var="estado"
+									itemLabel="#{estado.sigla}" itemValue="#{estado}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="cidade" value="Cidade" />
+							<p:selectOneMenu id="cidade"
+								value="#{perfilController.edicaoPessoa.endereco.cidade}"
+								autoWidth="false" filter="true" filterMatchMode="contains"
+								converter="JsfCidadeConverter">
+								<f:selectItem itemLabel="Selecione..." itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{perfilController.cidades}" var="cidade"
+									itemLabel="#{cidade.cidade}" itemValue="#{cidade}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+
+				<div class="ui-g-12">
+
+					<p:fieldset id="acesso-fs" legend="Acesso">
+						<p:commandButton
+							actionListener="#{perfilController.modificarSenha()}"
+							value="Modificar Senha" icon="fa fa-fw fa-question"
+							disabled="#{perfilController.modificarSenha}" update="acesso-fs" />
+
+						<p:panelGrid id="painel-acesso-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8">
+
+							<p:outputLabel for="senha" value="Nova Senha" />
+							<p:password id="senha" required="false"
+								value="#{perfilController.novaSenha}" match="senha2"
+								feedback="true" inline="true"
+								promptLabel="Por favor, digite uma senha." weakLabel="Fraca"
+								goodLabel="Forte" strongLabel="Muito Forte"
+								disabled="#{!perfilController.modificarSenha}" />
+
+							<p:outputLabel for="senha2" value="Confirme a Nova Senha" />
+							<p:password id="senha2" required="false"
+								value="#{perfilController.novaSenha}" feedback="true"
+								inline="true" promptLabel="Por favor, digite uma senha."
+								weakLabel="Fraca" goodLabel="Forte" strongLabel="Muito Forte"
+								disabled="#{!perfilController.modificarSenha}" />
+
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="salvar-button" value="Salvar"
+						action="#{perfilController.salvar()}" process="@form"
+						update="messages-dialog, painel-pessoal-dialog, painel-contato-dialog, painel-endereco-dialog, acesso-fs, painel-acesso-dialog"
+						icon="fa fa-save" />
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="voltar-button" value="Voltar"
+						action="Home.jsf?faces-redirect=true" process="@this"
+						icon="fa fa-mail-reply" />
+				</div>
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

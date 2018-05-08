@@ -1,0 +1,106 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">Professores</h1>
+
+		<h:form id="form">
+
+			<p:messages id="messages-dialog" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton value="Novo" icon="fa fa-user-plus"
+						action="#{professorController.prepararNovoProfessor()}"
+						process="@this" />
+
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
+
+					<p:commandButton icon="fa fa-fw fa-edit" title="Editar"
+						action="#{professorController.editarProfessor()}" process="@this"
+						disabled="#{professorController.professorSelecionado == null}" />
+
+				</f:facet>
+			</p:toolbar>
+
+			<p:dataTable id="professores-table" widgetVar="professores-table"
+				var="professor" value="#{professorController.professores}"
+				emptyMessage="Nenhum professor cadastrado." paginator="true"
+				rows="10" paginatorPosition="both"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" reflow="true"
+				selection="#{professorController.professorSelecionado}"
+				selectionMode="single" rowKey="#{professor.codigo}"
+				filteredValue="#{professorController.professoresFiltrados}"
+				style="margin-top: 10px">
+
+				<p:ajax event="rowSelect" update="form:toolbar" />
+				<p:ajax event="rowUnselect" update="form:toolbar" />
+
+				<p:column headerText="Matrícula"
+					filterBy="#{professor.usuario.matricula}"
+					filterMatchMode="contains">
+					<h:outputText value="#{professor.usuario.matricula}" />
+				</p:column>
+
+				<p:column headerText="Nome" filterBy="#{professor.nome}"
+					filterMatchMode="contains">
+					<h:outputText value="#{professor.nome}" />
+				</p:column>
+
+				<p:column headerText="RG" filterBy="#{professor.rg}"
+					filterMatchMode="startsWith" width="150">
+					<h:outputText value="#{professor.rg}" />
+				</p:column>
+
+				<p:column headerText="CPF" filterBy="#{professor.cpf}"
+					filterMatchMode="startsWith" width="150">
+					<h:outputText value="#{professor.cpf}" converter="JsfCPFConverter" />
+				</p:column>
+
+				<p:column headerText="Sexo" filterBy="#{professor.sexo.descricao}"
+					filterMatchMode="equals" width="85">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('professores-table').filter()">
+							<f:selectItems var="s" value="#{professorController.sexo}"
+								itemLabel="#{s.descricao.subSequence(0,1)}"
+								itemValue="#{s.descricao}" />
+						</p:selectOneButton>
+					</f:facet>
+					<h:outputText value="#{professor.sexo.descricao.subSequence(0,1)}" />
+				</p:column>
+
+				<p:column headerText="Nascimento" width="100">
+					<h:outputText value="#{professor.dtNascimento}">
+						<f:convertDateTime type="localDateTime" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Ativo" filterBy="#{professor.ativo}"
+					filterMatchMode="equals" width="150">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('professores-table').filter()">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="Sim" itemValue="true" />
+							<f:selectItem itemLabel="Não" itemValue="false" />
+						</p:selectOneButton>
+					</f:facet>
+					<p:inputSwitch value="#{professor.ativo}" onLabel="Sim"
+						offLabel="Não">
+						<p:ajax update="form:messages-dialog"
+							listener="#{professorController.alterarPropriedadeAtivo(professor)}" />
+					</p:inputSwitch>
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

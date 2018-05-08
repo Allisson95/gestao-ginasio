@@ -1,0 +1,89 @@
+/* TOGGLE */
+.aw-toggle {
+	float: right;
+	line-height: 50px;
+	margin-right: 15px;
+	color: #fff;
+}
+
+/* MENU */
+.aw-menu {
+	font-size: 1.3em;
+}
+
+.aw-menu>ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.aw-menu>ul a {
+	display: block;
+	padding: 10px 15px;
+	text-decoration: none;
+	font-weight: 500;
+	color: #373737;
+}
+
+.aw-menu>ul i {
+	margin-right: 6px;
+}
+
+.aw-menu>ul a:hover, .aw-menu>ul a:focus {
+	border-left: 4px solid #2399e5;
+	background-color: #f3f3f3;
+	color: #2399e5;
+}
+
+.aw-menu>ul .is-selected {
+	border-left: 4px solid #2399e5;
+	background-color: #f3f3f3;
+}
+
+.aw-menu>ul .is-selected a {
+	margin-left: -4px;
+	color: #2399e5;
+}
+
+.aw-menu-perfil {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.aw-menu-perfil-foto {
+	float: none;
+	margin: 0 auto;
+	width: 50%;
+	height: 50%;
+	-webkit-border-radius: 50% !important;
+	-moz-border-radius: 50% !important;
+	border-radius: 50% !important;
+}
+
+.aw-menu-perfil-nome {
+	color: #5a7391;
+	font-size: 16px;
+	font-weight: 600;
+	margin-bottom: 7px;
+}
+
+.aw-menu-perfil-matricula {
+	color: #5b9bd1;
+	font-size: 13px;
+	font-weight: 600;
+	margin-bottom: 5px;
+}
+
+.aw-menu-perfil-editar {
+	font-size: 13px;
+	font-weight: 300;
+	margin-bottom: 15px;
+}
+
+/* PAGE-TITLE */
+.aw-page-title {
+	margin: 0;
+	padding: 20px 0;
+	font-size: 1.5em;
+	color: #373737;
+}

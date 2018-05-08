@@ -1,0 +1,102 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">Alunos</h1>
+
+		<h:form id="form">
+
+			<p:messages id="messages-dialog" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton value="Novo" icon="fa fa-user-plus"
+						action="#{alunoController.prepararNovoAluno()}" process="@this" />
+
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
+
+					<p:commandButton icon="fa fa-fw fa-edit" title="Editar"
+						action="#{alunoController.editarAluno()}" process="@this"
+						disabled="#{alunoController.alunoSelecionado == null}" />
+				</f:facet>
+
+			</p:toolbar>
+
+			<p:dataTable id="alunos-table" widgetVar="alunos-table" var="aluno"
+				value="#{alunoController.alunos}"
+				emptyMessage="Nenhum aluno cadastrado." paginator="true" rows="10"
+				paginatorPosition="both"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" reflow="true"
+				selection="#{alunoController.alunoSelecionado}"
+				selectionMode="single" rowKey="#{aluno.codigo}"
+				filteredValue="#{alunoController.alunosFiltrados}"
+				style="margin-top: 10px">
+
+				<p:ajax event="rowSelect" update="form:toolbar" />
+				<p:ajax event="rowUnselect" update="form:toolbar" />
+
+				<p:column headerText="Matrícula"
+					filterBy="#{aluno.usuario.matricula}" filterMatchMode="contains">
+					<h:outputText value="#{aluno.usuario.matricula}" />
+				</p:column>
+
+				<p:column headerText="Nome" filterBy="#{aluno.nome}"
+					filterMatchMode="contains">
+					<h:outputText value="#{aluno.nome}" />
+				</p:column>
+
+				<p:column headerText="RG" filterBy="#{aluno.rg}"
+					filterMatchMode="startsWith" width="150">
+					<h:outputText value="#{aluno.rg}" />
+				</p:column>
+
+				<p:column headerText="CPF" filterBy="#{aluno.cpf}"
+					filterMatchMode="startsWith" width="150">
+					<h:outputText value="#{aluno.cpf}" converter="JsfCPFConverter" />
+				</p:column>
+
+				<p:column headerText="Sexo" filterBy="#{aluno.sexo.descricao}"
+					filterMatchMode="equals" width="85">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('alunos-table').filter()">
+							<f:selectItems var="s" value="#{alunoController.sexo}"
+								itemLabel="#{s.descricao.subSequence(0,1)}"
+								itemValue="#{s.descricao}" />
+						</p:selectOneButton>
+					</f:facet>
+					<h:outputText value="#{aluno.sexo.descricao.subSequence(0,1)}" />
+				</p:column>
+
+				<p:column headerText="Nascimento" width="100">
+					<h:outputText value="#{aluno.dtNascimento}">
+						<f:convertDateTime type="localDateTime" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Ativo" filterBy="#{aluno.ativo}"
+					filterMatchMode="equals" width="150">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('alunos-table').filter()">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="Sim" itemValue="true" />
+							<f:selectItem itemLabel="Não" itemValue="false" />
+						</p:selectOneButton>
+					</f:facet>
+					<p:inputSwitch value="#{aluno.ativo}" onLabel="Sim" offLabel="Não">
+						<p:ajax update="form:messages-dialog"
+							listener="#{alunoController.alterarPropriedadeAtivo(aluno)}" />
+					</p:inputSwitch>
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

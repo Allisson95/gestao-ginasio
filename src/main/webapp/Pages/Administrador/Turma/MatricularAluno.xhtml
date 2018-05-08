@@ -1,0 +1,134 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">Matricular Aluno</h1>
+
+		<h:form id="form">
+
+			<p:messages id="messages-dialog" />
+
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<p:fieldset legend="Turma">
+						<p:panelGrid id="painel-turma-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8">
+
+							<p:outputLabel for="identificacao" value="Identificação" />
+							<h:outputText id="identificacao"
+								value="#{matriculaAlunoController.edicaoTurma.identificacao}"
+								rendered="#{matriculaAlunoController.edicaoTurma != null}" />
+
+							<p:outputLabel for="dtInicio" value="Data de Inicio" />
+							<h:outputText id="dtInicio"
+								value="#{matriculaAlunoController.edicaoTurma.dtInicio}"
+								rendered="#{matriculaAlunoController.edicaoTurma != null}">
+								<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+							</h:outputText>
+
+							<p:outputLabel for="dtFim" value="Data de Fim" />
+							<h:outputText id="dtFim"
+								value="#{matriculaAlunoController.edicaoTurma.dtFim}"
+								rendered="#{matriculaAlunoController.edicaoTurma != null}">
+								<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+							</h:outputText>
+
+							<p:outputLabel for="modalidade" value="Modalidade" />
+							<h:outputText id="modalidade"
+								value="#{matriculaAlunoController.edicaoTurma.modalidade.nome}"
+								rendered="#{matriculaAlunoController.edicaoTurma != null}" />
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+
+				<div class="ui-g-12">
+					<p:fieldset legend="Alunos">
+						<p:dataTable id="alunos-table" widgetVar="alunos-table"
+							var="aluno" value="#{matriculaAlunoController.alunos}"
+							emptyMessage="Nenhum aluno cadastrado." paginator="true"
+							rows="10" paginatorPosition="both"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15" reflow="true"
+							selection="#{matriculaAlunoController.alunoSelecionado}"
+							selectionMode="single" rowKey="#{aluno.codigo}"
+							filteredValue="#{matriculaAlunoController.alunosFiltrados}"
+							style="margin-top: 10px">
+
+							<p:ajax event="rowSelect" update="form:matricular-button" />
+							<p:ajax event="rowUnselect" update="form:matricular-button" />
+
+							<p:column headerText="Nome" filterBy="#{aluno.nome}"
+								filterMatchMode="contains">
+								<h:outputText value="#{aluno.nome}" />
+							</p:column>
+
+							<p:column headerText="RG" filterBy="#{aluno.rg}"
+								filterMatchMode="startsWith" width="150">
+								<h:outputText value="#{aluno.rg}" />
+							</p:column>
+
+							<p:column headerText="CPF" filterBy="#{aluno.cpf}"
+								filterMatchMode="startsWith" width="150">
+								<h:outputText value="#{aluno.cpf}" converter="JsfCPFConverter" />
+							</p:column>
+
+							<p:column headerText="Sexo" filterBy="#{aluno.sexo.descricao}"
+								filterMatchMode="equals" width="85">
+								<f:facet name="filter">
+									<p:selectOneButton onchange="PF('alunos-table').filter()">
+										<f:selectItems var="s" value="#{alunoController.sexo}"
+											itemLabel="#{s.descricao.subSequence(0,1)}"
+											itemValue="#{s.descricao}" />
+									</p:selectOneButton>
+								</f:facet>
+								<h:outputText value="#{aluno.sexo.descricao.subSequence(0,1)}" />
+							</p:column>
+
+							<p:column headerText="Nascimento" width="100">
+								<h:outputText value="#{aluno.dtNascimento}">
+									<f:convertDateTime type="localDateTime" pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Ativo" filterBy="#{aluno.ativo}"
+								filterMatchMode="equals" width="150">
+								<f:facet name="filter">
+									<p:selectOneButton onchange="PF('alunos-table').filter()">
+										<f:converter converterId="javax.faces.Boolean" />
+										<f:selectItem itemLabel="Sim" itemValue="true" />
+										<f:selectItem itemLabel="Não" itemValue="false" />
+									</p:selectOneButton>
+								</f:facet>
+								<p:inputSwitch value="#{aluno.ativo}" onLabel="Sim"
+									offLabel="Não" disabled="true" />
+							</p:column>
+						</p:dataTable>
+					</p:fieldset>
+				</div>
+
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="matricular-button" value="Matricular"
+						action="#{matriculaAlunoController.matricular()}" process="@form"
+						update="messages-dialog" icon="fa fa-save"
+						disabled="#{matriculaAlunoController.alunoSelecionado == null}" />
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="voltar-button" value="Voltar"
+						action="Turmas.jsf?faces-redirect=true" process="@this"
+						icon="fa fa-mail-reply">
+						<p:confirm message="Deseja descartar as alterações e voltar?" />
+					</p:commandButton>
+				</div>
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

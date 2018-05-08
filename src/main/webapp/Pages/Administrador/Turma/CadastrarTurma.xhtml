@@ -1,0 +1,180 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">#{cadastroTurmaController.cadastrando ?
+			'Cadastro de ' : 'Editando '} Turma</h1>
+
+		<h:form id="form">
+
+			<p:messages id="messages-dialog" />
+
+			<p:defaultCommand target="salvar-button" />
+
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<p:fieldset legend="Turma">
+						<p:panelGrid id="painel-turma-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8">
+
+							<p:outputLabel for="identificacao" value="Identificação" />
+							<p:inputText id="identificacao"
+								value="#{cadastroTurmaController.edicaoTurma.identificacao}"
+								disabled="true" />
+
+							<p:outputLabel for="dtInicio" value="Data de Inicio" />
+							<p:calendar id="dtInicio"
+								value="#{cadastroTurmaController.edicaoTurma.dtInicio}"
+								pattern="dd/MM/yyyy" mask="true" navigator="true"
+								yearRange="c0:c+10" showButtonPanel="true" showOn="button"
+								disabled="#{!cadastroTurmaController.cadastrando}">
+								<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+							</p:calendar>
+
+							<p:outputLabel for="dtFim" value="Data de Fim" />
+							<p:calendar id="dtFim"
+								value="#{cadastroTurmaController.edicaoTurma.dtFim}"
+								pattern="dd/MM/yyyy" mask="true" navigator="true"
+								yearRange="c0:c+10" showButtonPanel="true" showOn="button"
+								disabled="#{!cadastroTurmaController.cadastrando}">
+								<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+							</p:calendar>
+
+							<p:outputLabel for="modalidade" value="Modalidade" />
+							<p:selectOneMenu id="modalidade"
+								value="#{cadastroTurmaController.edicaoTurma.modalidade}"
+								rendered="#{cadastroTurmaController.edicaoTurma != null}"
+								disabled="#{!cadastroTurmaController.cadastrando}"
+								autoWidth="false" converter="JsfModalidadeConverter">
+								<p:ajax
+									listener="#{cadastroTurmaController.buscarProfessoresDaModalidade()}"
+									update="form:painel-professores-dialog" />
+								<f:selectItem itemLabel="Selecione..." itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{cadastroTurmaController.modalidades}"
+									var="modalidade" itemLabel="#{modalidade.nome}"
+									itemValue="#{modalidade}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+				<div class="ui-g-12">
+					<p:fieldset legend="Professor(es)">
+						<p:panelGrid id="painel-professores-dialog" columns="1"
+							layout="grid" style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder" columnClasses="ui-grid-col-12">
+
+							<p:selectManyCheckbox id="professor"
+								value="#{cadastroTurmaController.edicaoTurma.professores}"
+								layout="responsive" columns="4"
+								converter="JsfProfessorConverter">
+								<f:attribute name="collectionType" value="java.util.HashSet" />
+								<f:selectItems value="#{cadastroTurmaController.professores}"
+									var="prof"
+									itemLabel="#{cadastroTurmaController.abreviarNome(prof.nome)}"
+									itemValue="#{prof}" />
+							</p:selectManyCheckbox>
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+				<div class="ui-g-12">
+					<p:fieldset legend="Aula">
+						<p:panelGrid id="painel-aula-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8">
+
+							<p:outputLabel for="hrInicio" value="Hora de Inicio" />
+							<p:calendar id="hrInicio"
+								value="#{cadastroTurmaController.hrInicioDaAula}"
+								timeOnly="true" pattern="HH:mm" mask="true"
+								showButtonPanel="true" showTodayButton="false" showOn="button"
+								required="true" requiredMessage="Hora de Inicio é obrigatório."
+								disabled="#{!cadastroTurmaController.cadastrando}">
+								<f:convertDateTime type="localTime" pattern="HH:mm" />
+							</p:calendar>
+
+							<p:outputLabel for="hrFim" value="Hora de Fim" />
+							<p:calendar id="hrFim"
+								value="#{cadastroTurmaController.hrFimDaAula}" timeOnly="true"
+								pattern="HH:mm" mask="true" showButtonPanel="true"
+								showTodayButton="false" showOn="button" required="true"
+								requiredMessage="Hora de Fim é obrigatório."
+								disabled="#{!cadastroTurmaController.cadastrando}">
+								<f:convertDateTime type="localTime" pattern="HH:mm" />
+							</p:calendar>
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+				<div class="ui-g-12">
+					<p:fieldset legend="Periodicidade">
+						<p:panelGrid id="painel-periodicidade-dialog" columns="2"
+							layout="grid" style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel for="domingo" value="Domingo" />
+							<p:selectBooleanCheckbox id="domingo"
+								value="#{cadastroTurmaController.edicaoTurma.periodicidade.diasSemana.domingo}"
+								disabled="#{!cadastroTurmaController.cadastrando}" />
+
+							<p:outputLabel for="segunda" value="Segunda" />
+							<p:selectBooleanCheckbox id="segunda"
+								value="#{cadastroTurmaController.edicaoTurma.periodicidade.diasSemana.segunda}"
+								disabled="#{!cadastroTurmaController.cadastrando}" />
+
+							<p:outputLabel for="terca" value="Terça" />
+							<p:selectBooleanCheckbox id="terca"
+								value="#{cadastroTurmaController.edicaoTurma.periodicidade.diasSemana.terca}"
+								disabled="#{!cadastroTurmaController.cadastrando}" />
+
+							<p:outputLabel for="quarta" value="Quarta" />
+							<p:selectBooleanCheckbox id="quarta"
+								value="#{cadastroTurmaController.edicaoTurma.periodicidade.diasSemana.quarta}"
+								disabled="#{!cadastroTurmaController.cadastrando}" />
+
+							<p:outputLabel for="quinta" value="Quinta" />
+							<p:selectBooleanCheckbox id="quinta"
+								value="#{cadastroTurmaController.edicaoTurma.periodicidade.diasSemana.quinta}"
+								disabled="#{!cadastroTurmaController.cadastrando}" />
+
+							<p:outputLabel for="sexta" value="Sexta" />
+							<p:selectBooleanCheckbox id="sexta"
+								value="#{cadastroTurmaController.edicaoTurma.periodicidade.diasSemana.sexta}"
+								disabled="#{!cadastroTurmaController.cadastrando}" />
+
+							<p:outputLabel for="sabado" value="Sábado" />
+							<p:selectBooleanCheckbox id="sabado"
+								value="#{cadastroTurmaController.edicaoTurma.periodicidade.diasSemana.sabado}"
+								disabled="#{!cadastroTurmaController.cadastrando}" />
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="salvar-button" value="Salvar"
+						action="#{cadastroTurmaController.salvar()}" process="@form"
+						update="messages-dialog, painel-turma-dialog, painel-aula-dialog, painel-periodicidade-dialog, painel-professores-dialog"
+						icon="fa fa-save" />
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="voltar-button" value="Voltar"
+						action="Turmas.jsf?faces-redirect=true" process="@this"
+						icon="fa fa-mail-reply">
+						<p:confirm message="Deseja descartar as alterações e voltar?" />
+					</p:commandButton>
+				</div>
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

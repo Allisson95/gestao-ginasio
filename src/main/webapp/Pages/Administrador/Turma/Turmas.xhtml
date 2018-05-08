@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">Turmas</h1>
+
+		<h:form id="form">
+
+			<p:messages id="messages-dialog" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton value="Nova" icon="fa fa-plus"
+						action="#{turmaController.prepararNovaTurma()}" process="@this" />
+
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
+
+					<p:commandButton icon="fa fa-fw fa-edit" title="Editar"
+						process="@this" action="#{turmaController.editarTurma()}"
+						disabled="#{turmaController.turmaSelecionada == null}" />
+
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
+
+					<p:commandButton icon="fa fa-fw fa-mortar-board"
+						title="Matricular Aluno"
+						action="#{turmaController.matricularAlunoNaTurma()}"
+						process="@this"
+						disabled="#{turmaController.turmaSelecionada == null or !turmaController.turmaSelecionada.ativo}" />
+				</f:facet>
+			</p:toolbar>
+
+			<p:dataTable id="turmas-table" widgetVar="turmas-table" var="turma"
+				value="#{turmaController.turmas}"
+				emptyMessage="Nenhuma turma cadastrada." paginator="true" rows="10"
+				paginatorPosition="both"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" reflow="true"
+				selection="#{turmaController.turmaSelecionada}"
+				selectionMode="single" rowKey="#{turma.codigo}"
+				filteredValue="#{turmaController.turmasFiltradas}"
+				style="margin-top: 10px">
+
+				<p:ajax event="rowSelect" update="form:toolbar" />
+				<p:ajax event="rowUnselect" update="form:toolbar" />
+
+				<p:column headerText="Identificação"
+					filterBy="#{turma.identificacao}" filterMatchMode="contains">
+					<h:outputText value="#{turma.identificacao}" />
+				</p:column>
+
+				<p:column headerText="Inicio">
+					<h:outputText value="#{turma.dtInicio}">
+						<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Fim">
+					<h:outputText value="#{turma.dtFim}">
+						<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Modalidade"
+					filterBy="#{turma.modalidade.nome}" filterMatchMode="startsWith">
+					<h:outputText value="#{turma.modalidade.nome}" />
+				</p:column>
+
+				<p:column headerText="Ativo" filterBy="#{turma.ativo}"
+					filterMatchMode="equals" width="150">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('turmas-table').filter()">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="Sim" itemValue="true" />
+							<f:selectItem itemLabel="Não" itemValue="false" />
+						</p:selectOneButton>
+					</f:facet>
+					<p:inputSwitch value="#{turma.ativo}" onLabel="Sim" offLabel="Não">
+						<p:ajax update="form:messages-dialog"
+							listener="#{turmaController.alterarPropriedadeAtivo(turma)}" />
+					</p:inputSwitch>
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

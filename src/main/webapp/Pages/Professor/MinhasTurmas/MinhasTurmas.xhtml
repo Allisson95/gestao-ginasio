@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">Minhas Turmas</h1>
+
+		<h:form id="form">
+
+			<p:messages id="messages-dialog" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton value="Mensagens" icon="fa fa-fw fa-edit"
+						title="Mensagens" process="@this" />
+				</f:facet>
+
+			</p:toolbar>
+
+			<p:dataGrid id="turmas-grid" var="turma"
+				value="#{minhasTurmasProfessorController.turmas}" layout="grid"
+				columns="#{minhasTurmasProfessorController.turmas.size() > 1 ? 2 : 1}"
+				rows="12" emptyMessage="Nenhuma turma sendo ministrada por você."
+				style="margin-top: 10px">
+
+				<p:panel header="#{turma.identificacao}" style="text-align:center">
+					<h:panelGrid columns="1" style="width:100%">
+
+						<p:commandButton value="Frequência dos Alunos"
+							action="#{minhasTurmasProfessorController.realizarChamadaDaTurma(turma)}"
+							process="@this" icon="fa fa-angellist" />
+
+					</h:panelGrid>
+				</p:panel>
+
+			</p:dataGrid>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,72 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">Modalidades</h1>
+
+		<h:form id="form">
+
+			<p:messages id="messages-dialog" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton value="Nova" icon="fa fa-plus"
+						action="#{modalidadeController.prepararNovaModalidade()}"
+						process="@this" />
+
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
+
+					<p:commandButton icon="fa fa-fw fa-edit" title="Editar"
+						action="#{modalidadeController.editarModalidade()}"
+						process="@this"
+						disabled="#{modalidadeController.modalidadeSelecionada == null}" />
+				</f:facet>
+			</p:toolbar>
+
+			<p:dataTable id="modalidades-table" var="modalidade"
+				value="#{modalidadeController.modalidades}"
+				emptyMessage="Nenhuma modalidade cadastrada." paginator="true"
+				rows="10" paginatorPosition="both"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" reflow="true"
+				selection="#{modalidadeController.modalidadeSelecionada}"
+				selectionMode="single" rowKey="#{modalidade.codigo}"
+				filteredValue="#{modalidadeController.modalidadesFiltradas}"
+				style="margin-top: 10px">
+
+				<p:ajax event="rowSelect" update="form:toolbar" />
+				<p:ajax event="rowUnselect" update="form:toolbar" />
+
+				<p:column headerText="Modalidade" filterBy="#{modalidade.nome}"
+					filterMatchMode="startsWith">
+					<h:outputText value="#{modalidade.nome}" />
+				</p:column>
+
+				<p:column headerText="Ativo" filterBy="#{modalidade.ativo}"
+					filterMatchMode="equals" width="150">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('modalidades-table').filter()">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="Sim" itemValue="true" />
+							<f:selectItem itemLabel="Não" itemValue="false" />
+						</p:selectOneButton>
+					</f:facet>
+					<p:inputSwitch value="#{modalidade.ativo}" onLabel="Sim"
+						offLabel="Não">
+						<p:ajax update="form:messages-dialog"
+							listener="#{modalidadeController.alterarPropriedadeAtivo(modalidade)}" />
+					</p:inputSwitch>
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

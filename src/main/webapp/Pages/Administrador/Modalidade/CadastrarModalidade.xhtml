@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">#{cadastroModalidadeController.cadastrando
+			? 'Cadastro de ' : 'Editando '} Modalidade</h1>
+
+		<h:form id="form">
+
+			<p:messages id="messages-dialog" />
+
+			<p:defaultCommand target="salvar-button" />
+
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<p:fieldset legend="Modalidade">
+						<p:panelGrid id="painel-modalidade-dialog" columns="2"
+							layout="grid" style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8"
+							rendered="#{cadastroModalidadeController.edicaoModalidade != null}">
+
+							<p:outputLabel for="nome" value="Modalidade" />
+							<p:inputText id="nome" maxlength="120"
+								value="#{cadastroModalidadeController.edicaoModalidade.nome}" />
+
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="salvar-button" value="Salvar"
+						action="#{cadastroModalidadeController.salvar()}" process="@form"
+						update="messages-dialog, painel-modalidade-dialog"
+						icon="fa fa-save" />
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="voltar-button" value="Voltar"
+						action="Modalidades.jsf?faces-redirect=true" process="@this"
+						icon="fa fa-mail-reply">
+						<p:confirm message="Deseja descartar as alterações e voltar?" />
+					</p:commandButton>
+				</div>
+			</div>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

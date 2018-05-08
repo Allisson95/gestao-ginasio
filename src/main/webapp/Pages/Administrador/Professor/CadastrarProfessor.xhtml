@@ -1,0 +1,204 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">#{cadastroProfessorController.cadastrando
+			? 'Cadastro de ' : 'Editando '} Professor</h1>
+
+		<h:form id="form" prependId="false">
+
+			<p:messages id="messages-dialog" />
+
+			<p:defaultCommand target="salvar-button" />
+
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<p:fieldset legend="Pessoal">
+						<p:panelGrid id="painel-pessoal-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8"
+							rendered="#{cadastroProfessorController.edicaoProfessor != null}">
+
+							<p:outputLabel for="nome" value="Nome" />
+							<p:inputText id="nome"
+								value="#{cadastroProfessorController.edicaoProfessor.nome}"
+								maxlength="120" />
+
+							<p:outputLabel for="rg" value="RG" />
+							<p:inputText id="rg"
+								value="#{cadastroProfessorController.edicaoProfessor.rg}"
+								maxlength="10" />
+
+							<p:outputLabel for="cpf" value="CPF" />
+							<p:inputMask id="cpf"
+								value="#{cadastroProfessorController.edicaoProfessor.cpf}"
+								mask="999.999.999-99" converter="JsfCPFConverter" />
+
+							<p:outputLabel for="dtNascimento" value="Data de Nascimento" />
+							<p:calendar id="dtNascimento"
+								value="#{cadastroProfessorController.edicaoProfessor.dtNascimento}"
+								pattern="dd/MM/yyyy" mask="true" navigator="true"
+								yearRange="c-100:c+0" showButtonPanel="true" showOn="button">
+								<f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+							</p:calendar>
+
+							<p:outputLabel for="sexo" value="Sexo" />
+							<p:selectOneMenu id="sexo"
+								value="#{cadastroProfessorController.edicaoProfessor.sexo}"
+								rendered="#{cadastroProfessorController.edicaoProfessor != null}"
+								autoWidth="false">
+								<f:selectItem itemLabel="Selecione..." itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{cadastroProfessorController.sexo}"
+									var="sexo" itemLabel="#{sexo}" itemValue="#{sexo}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+				<div class="ui-g-12">
+					<p:fieldset legend="Contato">
+						<p:panelGrid id="painel-contato-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 5px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8"
+							rendered="#{cadastroProfessorController.edicaoProfessor != null}">
+
+							<p:outputLabel for="email" value="E-mail" />
+							<p:inputText id="email"
+								value="#{cadastroProfessorController.edicaoProfessor.email}" />
+
+						</p:panelGrid>
+						<p:panel id="telefone-panel" header="Telefones"
+							style="margin: 5px 5px">
+							<p:repeat var="tel"
+								value="#{cadastroProfessorController.telefones}">
+								<p:panelGrid columns="3" layout="grid"
+									style="margin-top: 5px; margin-bottom: 5px;"
+									styleClass="panelgrid-noborder"
+									columnClasses="ui-grid-col-4, ui-grid-col-7, ui-grid-col-1">
+
+									<p:outputLabel for="telefone" value="Telefone" />
+									<p:inputMask id="telefone" value="#{tel.telefone}"
+										mask="(99) 9 9999-9999" autoClear="false"
+										converter="JsfTelefoneConverter" />
+
+									<p:commandButton
+										actionListener="#{cadastroProfessorController.removerTelefone(tel)}"
+										process="@this" update="telefone-panel" icon="fa fa-trash-o"
+										style="width: 18px;height: 18px;" />
+
+								</p:panelGrid>
+							</p:repeat>
+
+							<f:facet name="actions">
+								<p:commandButton
+									actionListener="#{cadastroProfessorController.adicionarTelefone()}"
+									process="@parent" update="telefone-panel" icon="fa fa-plus"
+									style="width: 18px;height: 18px;" />
+							</f:facet>
+						</p:panel>
+					</p:fieldset>
+				</div>
+				<div class="ui-g-12">
+					<p:fieldset legend="Endereço">
+						<p:panelGrid id="painel-endereco-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8"
+							rendered="#{cadastroProfessorController.edicaoProfessor != null}">
+
+							<p:outputLabel for="cep" value="CEP" />
+							<p:inputMask id="cep"
+								value="#{cadastroProfessorController.edicaoProfessor.endereco.cep}"
+								mask="99.999-999" converter="JsfCepConverter">
+								<p:ajax event="blur"
+									listener="#{cadastroProfessorController.buscarCep}"
+									update="painel-endereco-dialog" />
+							</p:inputMask>
+
+							<p:outputLabel for="logradouro" value="Logradouro" />
+							<p:inputText id="logradouro"
+								value="#{cadastroProfessorController.edicaoProfessor.endereco.logradouro}" />
+
+							<p:outputLabel for="numero" value="Número" />
+							<p:inputNumber id="numero"
+								value="#{cadastroProfessorController.edicaoProfessor.endereco.numero}"
+								decimalPlaces="0" converter="javax.faces.Short" />
+
+							<p:outputLabel for="complemento" value="Complemento" />
+							<p:inputText id="complemento"
+								value="#{cadastroProfessorController.edicaoProfessor.endereco.complemento}" />
+
+							<p:outputLabel for="bairro" value="Bairro" />
+							<p:inputText id="bairro"
+								value="#{cadastroProfessorController.edicaoProfessor.endereco.bairro}" />
+
+							<p:outputLabel for="uf" value="UF" />
+							<p:selectOneMenu id="uf"
+								value="#{cadastroProfessorController.estadoSelecionado}"
+								converter="JsfEstadoConverter">
+								<p:ajax
+									listener="#{cadastroProfessorController.buscarCidadesPeloEstado()}"
+									update="cidade" />
+								<f:selectItem itemLabel="Selecione..." itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{cadastroProfessorController.estados}"
+									var="estado" itemLabel="#{estado.sigla}" itemValue="#{estado}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="cidade" value="Cidade" />
+							<p:selectOneMenu id="cidade"
+								value="#{cadastroProfessorController.edicaoProfessor.endereco.cidade}"
+								autoWidth="false" filter="true" filterMatchMode="contains"
+								converter="JsfCidadeConverter">
+								<f:selectItem itemLabel="Selecione..." itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{cadastroProfessorController.cidades}"
+									var="cidade" itemLabel="#{cidade.cidade}" itemValue="#{cidade}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+
+				<div class="ui-g-12">
+					<p:fieldset legend="Modalidades">
+						<div class="ui-g-12">
+							<p:selectManyCheckbox id="modalidades"
+								value="#{cadastroProfessorController.edicaoProfessor.modalidades}"
+								converter="JsfModalidadeConverter" layout="responsive"
+								columns="4">
+								<f:attribute name="collectionType" value="java.util.HashSet" />
+								<f:selectItems var="modalidade"
+									value="#{cadastroProfessorController.modalidades}"
+									itemLabel="#{modalidade.nome}" itemValue="#{modalidade}" />
+							</p:selectManyCheckbox>
+						</div>
+					</p:fieldset>
+				</div>
+
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="salvar-button" value="Salvar"
+						action="#{cadastroProfessorController.salvar()}" process="@form"
+						update="messages-dialog, painel-pessoal-dialog, painel-contato-dialog, painel-endereco-dialog"
+						icon="fa fa-save" />
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="voltar-button" value="Voltar"
+						action="Professores.jsf?faces-redirect=true" process="@this"
+						icon="fa fa-mail-reply">
+						<p:confirm message="Deseja descartar as alterações e voltar?" />
+					</p:commandButton>
+				</div>
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

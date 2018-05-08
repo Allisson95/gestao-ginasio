@@ -1,0 +1,64 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+		<h1 class="aw-page-title">Novidades</h1>
+
+		<h:form id="form">
+
+			<p:messages id="messages-dialog" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton value="Nova" icon="fa fa-plus"
+						action="#{novidadeController.prepararNova()}" process="@this" />
+
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
+
+					<p:commandButton icon="fa fa-fw fa-edit" title="Editar"
+						action="#{novidadeController.editarNovidade()}" process="@this"
+						disabled="#{novidadeController.novidadeSelecionada == null}" />
+				</f:facet>
+			</p:toolbar>
+
+			<p:dataTable id="novidades-table" var="novidade"
+				value="#{novidadeController.novidades}"
+				emptyMessage="Nenhuma novidade cadastrada." paginator="true"
+				rows="10" paginatorPosition="both"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" reflow="true"
+				selection="#{novidadeController.novidadeSelecionada}"
+				selectionMode="single" rowKey="#{novidade.codigo}"
+				filteredValue="#{novidadeController.novidadesFiltradas}"
+				style="margin-top: 10px">
+
+				<p:ajax event="rowSelect" update="form:toolbar" />
+				<p:ajax event="rowUnselect" update="form:toolbar" />
+
+				<p:column headerText="Titulo" filterBy="#{novidade.titulo}"
+					filterMatchMode="contais">
+					<h:outputText value="#{novidade.titulo}" />
+				</p:column>
+
+				<p:column headerText="Postagem">
+					<h:outputText value="#{novidade.dtPostagem}">
+						<f:convertDateTime type="localDateTime" pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Autor" filterBy="#{novidade.pessoa.nome}"
+					filterMatchMode="contais">
+					<h:outputText value="#{novidade.pessoa.nome}" />
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

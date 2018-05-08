@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+
+		<h1 class="aw-page-title">Chamada da Turma</h1>
+
+		<h:form id="form" prependId="false">
+
+			<p:messages id="messages-dialog" />
+
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<p:fieldset legend="Aulas">
+						<p:panelGrid id="painel-aula-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-4, ui-grid-col-8">
+
+							<p:outputLabel for="aulas-select" value="Selecione a aula" />
+							<p:selectOneMenu id="aulas-select"
+								value="#{realizarChamadaDaTurmaController.aulaSelecionada}"
+								filter="true" filterMatchMode="contains" autoWidth="false"
+								converter="JsfAulaConverter">
+								<p:ajax
+									listener="#{realizarChamadaDaTurmaController.buscarFrequenciaDosAlunos}"
+									update="alunos-grid, salvar-button" />
+								<f:selectItem itemLabel="Selecione..." itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems
+									value="#{realizarChamadaDaTurmaController.aulasDaTurma}"
+									var="aula"
+									itemLabel="#{realizarChamadaDaTurmaController.criarLabelSelectAula(aula)}"
+									itemValue="#{aula}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+				<div class="ui-g-12">
+					<p:fieldset legend="Alunos">
+
+						<p:dataGrid id="alunos-grid" var="alunofrequencia"
+							value="#{realizarChamadaDaTurmaController.alunosFrequencias}"
+							rendered="#{!realizarChamadaDaTurmaController.alunosFrequencias.isEmpty()}"
+							layout="grid" columns="2"
+							emptyMessage="Nenhum aluno matriculado na turma."
+							style="margin-top: 10px">
+
+							<p:panel header="#{alunofrequencia.aluno.nome}"
+								style="text-align:center">
+								<p:panelGrid columns="2" layout="grid" style="width:100%">
+
+									<p:fieldset legend="Presente">
+										<p:inputSwitch value="#{alunofrequencia.frequencia.presente}"
+											onLabel="Sim" offLabel="Não" />
+									</p:fieldset>
+
+									<p:fieldset legend="Desempenho">
+										<p:rating
+											value="#{alunofrequencia.frequencia.desempenho.avaliacao}" />
+									</p:fieldset>
+
+								</p:panelGrid>
+							</p:panel>
+
+						</p:dataGrid>
+
+					</p:fieldset>
+				</div>
+
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="salvar-button" value="Salvar"
+						action="#{realizarChamadaDaTurmaController.salvar()}"
+						process="@form" update="messages-dialog" icon="fa fa-save"
+						disabled="#{realizarChamadaDaTurmaController.alunosFrequencias == null or realizarChamadaDaTurmaController.alunosFrequencias.isEmpty()}" />
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="voltar-button" value="Voltar"
+						action="MinhasTurmas.jsf?faces-redirect=true" process="@this"
+						icon="fa fa-mail-reply" />
+				</div>
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

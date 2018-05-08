@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+		<h1 class="aw-page-title">#{cadastroNovidadeController.cadastrando
+			? 'Cadastro de ' : 'Editando '} Novidade</h1>
+
+		<h:form id="form">
+			<p:messages id="messages-dialog" />
+
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<p:fieldset legend="Novidade">
+						<p:panelGrid id="painel-novidade-dialog" columns="2" layout="grid"
+							style="margin-top: 15px; margin-bottom: 15px;"
+							styleClass="panelgrid-noborder"
+							columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+							<p:outputLabel for="titulo" value="Titulo" />
+							<p:inputText id="titulo"
+								value="#{cadastroNovidadeController.edicaoNovidade.titulo}"
+								maxlength="120" required="true" />
+
+							<p:outputLabel for="descricao" value="Descrição" />
+							<p:textEditor id="descricao" widgetVar="editor"
+								value="#{cadastroNovidadeController.edicaoNovidade.descricao}"
+								placeholder="Descrição da novidade" height="300"
+								style="margin-bottom:10px" required="true" />
+
+						</p:panelGrid>
+					</p:fieldset>
+				</div>
+
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="salvar-button" value="Salvar"
+						action="#{cadastroNovidadeController.salvar()}" process="@form"
+						update="messages-dialog, painel-novidade-dialog" icon="fa fa-save" />
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p:commandButton id="voltar-button" value="Voltar"
+						action="Novidades.jsf?faces-redirect=true" process="@this"
+						icon="fa fa-mail-reply">
+						<p:confirm message="Deseja descartar as alterações e voltar?" />
+					</p:commandButton>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

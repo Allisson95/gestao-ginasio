@@ -1,0 +1,96 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<nav class="aw-menu">
+		<div class="aw-menu-perfil">
+			<div class="aw-menu-perfil-foto">
+				<p:graphicImage
+					rendered="#{principal.usuario.pessoa.sexo.descricao == 'FEMININO'}"
+					library="gestaoginasio" name="images/feminino.png" />
+				<p:graphicImage
+					rendered="#{principal.usuario.pessoa.sexo.descricao == 'MASCULINO'}"
+					library="gestaoginasio" name="images/masculino.png" />
+			</div>
+			<div class="aw-menu-perfil-nome">
+				<h:outputText value="#{principal.nome}" />
+			</div>
+			<div class="aw-menu-perfil-matricula">
+				<h:outputText value="Matrícula: " />
+				<h:outputText value="#{principal.matricula}" />
+			</div>
+			<div class="aw-menu-perfil-editar">
+				<h:form>
+					<p:commandButton action="/Pages/Perfil.jsf?faces-redirect=true"
+						value="Editar Perfil" icon="fa fa-fw fa-edit"
+						disabled="#{view.viewId eq '/Pages/Perfil.xhtml'}" />
+				</h:form>
+			</div>
+		</div>
+		<ul>
+			<li
+				class="#{view.viewId eq '/Pages/Home.xhtml' ? 'is-selected' : ''}">
+				<p:link outcome="/Pages/Home.jsf">
+					<i class="fa fa-fw fa-home"></i>Inicio</p:link>
+			</li>
+			<li
+				class="#{view.viewId eq '/Pages/Administrador/Aluno/Alunos.xhtml' ? 'is-selected' : ''}">
+				<p:link rendered="#{principal.hasAuthorities('ADMIN')}"
+					outcome="/Pages/Administrador/Aluno/Alunos.jsf">
+					<i class="fa fa-fw fa-user"></i>Alunos</p:link>
+			</li>
+			<li
+				class="#{view.viewId eq '/Pages/Administrador/Professor/Professores.xhtml' ? 'is-selected' : ''}">
+				<p:link rendered="#{principal.hasAuthorities('ADMIN')}"
+					outcome="/Pages/Administrador/Professor/Professores.jsf">
+					<i class="fa fa-fw fa-user"></i>Professores</p:link>
+			</li>
+			<li
+				class="#{view.viewId eq '/Pages/Administrador/Administrador/Administradores.xhtml' ? 'is-selected' : ''}">
+				<p:link rendered="#{principal.hasAuthorities('ADMIN')}"
+					outcome="/Pages/Administrador/Administrador/Administradores.jsf">
+					<i class="fa fa-fw fa-user"></i>Administradores</p:link>
+			</li>
+			<li
+				class="#{view.viewId eq '/Pages/Administrador/Modalidade/Modalidades.xhtml' ? 'is-selected' : ''}">
+				<p:link rendered="#{principal.hasAuthorities('ADMIN')}"
+					outcome="/Pages/Administrador/Modalidade/Modalidades.jsf">
+					<i class="fa fa-fw fa-soccer-ball-o"></i>Modalidades</p:link>
+			</li>
+			<li
+				class="#{view.viewId eq '/Pages/Administrador/Turma/Turmas.xhtml' ? 'is-selected' : ''}">
+				<p:link rendered="#{principal.hasAuthorities('ADMIN')}"
+					outcome="/Pages/Administrador/Turma/Turmas.jsf">
+					<i class="fa fa-fw fa-mortar-board"></i>Turmas</p:link>
+			</li>
+			<li
+				class="#{view.viewId eq '/Pages/Administrador/Mensagem/Mensagens.xhtml' ? 'is-selected' : ''}">
+				<p:link rendered="#{principal.hasAuthorities('ADMIN')}"
+					outcome="/Pages/Administrador/Mensagem/Mensagens.jsf">
+					<i class="fa fa-fw fa-envelope"></i>Mensagens</p:link>
+			</li>
+			<li
+				class="#{view.viewId eq '/Pages/Administrador/Novidade/Novidades.xhtml' ? 'is-selected' : ''}">
+				<p:link rendered="#{principal.hasAuthorities('ADMIN')}"
+					outcome="/Pages/Administrador/Novidade/Novidades.jsf">
+					<i class="fa fa-fw fa-lightbulb-o"></i>Novidades</p:link>
+			</li>
+			<li
+				class="#{view.viewId eq '/Pages/Professor/MinhasTurmas/MinhasTurmas.xhtml' ? 'is-selected' : ''}">
+				<p:link rendered="#{principal.hasAuthorities('PROFESSOR')}"
+					outcome="/Pages/Professor/MinhasTurmas/MinhasTurmas.jsf">
+					<i class="fa fa-fw fa-mortar-board"></i>Minhas Turmas</p:link>
+			</li>
+			<h:form id="logoutForm">
+				<f:passThroughAttribute name="action"
+					value="${request.contextPath}/logout" />
+				<f:passThroughAttribute name="method" value="POST" />
+				<li><p:commandLink ajax="false">
+						<i class="fa fa-fw fa-sign-out"></i>Sair</p:commandLink></li>
+			</h:form>
+		</ul>
+	</nav>
+
+</ui:composition>
