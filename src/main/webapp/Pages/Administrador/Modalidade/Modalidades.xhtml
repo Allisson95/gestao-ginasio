@@ -30,8 +30,8 @@
 				</f:facet>
 			</p:toolbar>
 
-			<p:dataTable id="modalidades-table" var="modalidade"
-				value="#{modalidadeController.modalidades}"
+			<p:dataTable id="modalidades-table" widgetVar="modalidades-table"
+				var="modalidade" value="#{modalidadeController.modalidades}"
 				emptyMessage="Nenhuma modalidade cadastrada." paginator="true"
 				rows="10" paginatorPosition="both"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"

@@ -72,12 +72,6 @@
 					<i class="fa fa-fw fa-envelope"></i>Mensagens</p:link>
 			</li>
 			<li
-				class="#{view.viewId eq '/Pages/Administrador/Novidade/Novidades.xhtml' ? 'is-selected' : ''}">
-				<p:link rendered="#{principal.hasAuthorities('ADMIN')}"
-					outcome="/Pages/Administrador/Novidade/Novidades.jsf">
-					<i class="fa fa-fw fa-lightbulb-o"></i>Novidades</p:link>
-			</li>
-			<li
 				class="#{view.viewId eq '/Pages/Professor/MinhasTurmas/MinhasTurmas.xhtml' ? 'is-selected' : ''}">
 				<p:link rendered="#{principal.hasAuthorities('PROFESSOR')}"
 					outcome="/Pages/Professor/MinhasTurmas/MinhasTurmas.jsf">

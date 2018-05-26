@@ -13,14 +13,6 @@
 
 			<p:messages id="messages-dialog" />
 
-			<p:toolbar id="toolbar">
-				<f:facet name="left">
-					<p:commandButton value="Mensagens" icon="fa fa-fw fa-edit"
-						title="Mensagens" process="@this" />
-				</f:facet>
-
-			</p:toolbar>
-
 			<p:dataGrid id="turmas-grid" var="turma"
 				value="#{minhasTurmasProfessorController.turmas}" layout="grid"
 				columns="#{minhasTurmasProfessorController.turmas.size() > 1 ? 2 : 1}"
