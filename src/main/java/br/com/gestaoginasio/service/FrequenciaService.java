@@ -1,6 +1,8 @@
 package br.com.gestaoginasio.service;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
@@ -28,6 +30,12 @@ public class FrequenciaService implements Serializable {
 	@Transacional
 	public Frequencia salvar(Frequencia frequencia) {
 		return this.frequenciaRepository.salvar(frequencia);
+	}
+
+	public List<Frequencia> buscarPeloAlunoETurma(Aluno aluno, Turma turma) {
+		return this.frequenciaRepository.buscarTodos(
+				"SELECT f FROM Frequencia AS f JOIN FETCH f.aula AS a WHERE a.dtAula <= ?0 AND f.codigoAlunoMatriculaTurma = ?1 AND f.codigoTurmaMatriculaTurma = ?2",
+				LocalDate.now(), aluno.getCodigo(), turma.getCodigo());
 	}
 
 }

@@ -77,6 +77,12 @@
 					outcome="/Pages/Professor/MinhasTurmas/MinhasTurmas.jsf">
 					<i class="fa fa-fw fa-mortar-board"></i>Minhas Turmas</p:link>
 			</li>
+			<li
+				class="#{view.viewId eq '/Pages/Aluno/MinhasTurmas/MinhasTurmas.xhtml' ? 'is-selected' : ''}">
+				<p:link rendered="#{principal.hasAuthorities('ALUNO')}"
+					outcome="/Pages/Aluno/MinhasTurmas/MinhasTurmas.jsf">
+					<i class="fa fa-fw fa-mortar-board"></i>Minhas Turmas</p:link>
+			</li>
 			<h:form id="logoutForm">
 				<f:passThroughAttribute name="action"
 					value="${request.contextPath}/logout" />

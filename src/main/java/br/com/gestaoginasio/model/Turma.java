@@ -24,7 +24,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -125,7 +124,6 @@ public class Turma implements Serializable {
 		this.periodicidade = periodicidade;
 	}
 
-	@NotEmpty(message = "Selecione pelo menos um professor.")
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "professor_ministra_turma", joinColumns = {
 			@JoinColumn(name = "codigo_turma") }, inverseJoinColumns = {

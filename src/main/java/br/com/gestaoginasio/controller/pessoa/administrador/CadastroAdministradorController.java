@@ -22,7 +22,6 @@ import br.com.gestaoginasio.model.Pessoa;
 import br.com.gestaoginasio.model.Sexo;
 import br.com.gestaoginasio.model.Telefone;
 import br.com.gestaoginasio.model.TipoPermissao;
-import br.com.gestaoginasio.model.Usuario;
 import br.com.gestaoginasio.service.CidadeService;
 import br.com.gestaoginasio.service.EstadoService;
 import br.com.gestaoginasio.service.PessoaService;
@@ -91,8 +90,7 @@ public class CadastroAdministradorController implements Serializable {
 		}
 
 		if (this.cadastrando) {
-			Usuario novoUsuario = this.usuarioService.criarNovoUsuario(this.edicaoAdministrador, TipoPermissao.ADMIN);
-			novoUsuario = this.usuarioService.salvar(novoUsuario);
+			this.usuarioService.criarESalvarUsuario(this.edicaoAdministrador, TipoPermissao.ADMIN);
 		}
 
 		this.facesMessages.info(this.messagesBundle.getMessage("pessoa.salvar", this.edicaoAdministrador.getNome()));

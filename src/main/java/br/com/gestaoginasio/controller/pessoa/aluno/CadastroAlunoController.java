@@ -22,7 +22,6 @@ import br.com.gestaoginasio.model.Estado;
 import br.com.gestaoginasio.model.Sexo;
 import br.com.gestaoginasio.model.Telefone;
 import br.com.gestaoginasio.model.TipoPermissao;
-import br.com.gestaoginasio.model.Usuario;
 import br.com.gestaoginasio.service.AlunoService;
 import br.com.gestaoginasio.service.CidadeService;
 import br.com.gestaoginasio.service.EstadoService;
@@ -91,8 +90,7 @@ public class CadastroAlunoController implements Serializable {
 		}
 
 		if (this.cadastrando) {
-			Usuario novoUsuario = this.usuarioService.criarNovoUsuario(this.edicaoAluno, TipoPermissao.ALUNO);
-			novoUsuario = this.usuarioService.salvar(novoUsuario);
+			this.usuarioService.criarESalvarUsuario(this.edicaoAluno, TipoPermissao.ALUNO);
 		}
 
 		this.facesMessages.info(this.messagesBundle.getMessage("pessoa.salvar", this.edicaoAluno.getNome()));

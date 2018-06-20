@@ -20,6 +20,8 @@ public class UsuarioService implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private static Integer semaforo = 0;
+
 	@Inject
 	private UsuarioRepository usuarioRepository;
 	@Inject
@@ -30,7 +32,17 @@ public class UsuarioService implements Serializable {
 		return this.usuarioRepository.salvar(usuario);
 	}
 
-	public Usuario criarNovoUsuario(Pessoa pessoa, TipoPermissao tipoPermissao) {
+	@Transacional
+	public Usuario criarESalvarUsuario(Pessoa pessoa, TipoPermissao tipoPermissao) {
+		Usuario novoUsuario = null;
+		synchronized (semaforo) {
+			novoUsuario = criarNovoUsuario(pessoa, tipoPermissao);
+			novoUsuario = this.usuarioRepository.salvar(novoUsuario);
+		}
+		return novoUsuario;
+	}
+
+	private Usuario criarNovoUsuario(Pessoa pessoa, TipoPermissao tipoPermissao) {
 		Usuario usuario = new Usuario();
 		usuario.setMatricula(this.gerarNovaMatricula());
 		usuario.setDtMatricula(LocalDate.now());

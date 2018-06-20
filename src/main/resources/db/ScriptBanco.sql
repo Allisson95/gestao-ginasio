@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS estado (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
 -- -----------------------------------------------------
 -- Tabela cidade
 -- -----------------------------------------------------
@@ -29,7 +28,6 @@ CREATE TABLE IF NOT EXISTS cidade (
     REFERENCES estado (codigo))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 -- -----------------------------------------------------
 -- Tabela endereco
@@ -48,7 +46,6 @@ CREATE TABLE IF NOT EXISTS endereco (
     REFERENCES cidade (codigo))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 -- -----------------------------------------------------
 -- Tabela pessoa
@@ -72,7 +69,6 @@ CREATE TABLE IF NOT EXISTS pessoa (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
 -- -----------------------------------------------------
 -- Tabela telefone
 -- -----------------------------------------------------
@@ -86,24 +82,6 @@ CREATE TABLE IF NOT EXISTS telefone (
     REFERENCES pessoa (codigo))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
-
--- -----------------------------------------------------
--- Tabela novidade
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS novidade (
-  codigo INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  titulo VARCHAR(120) NOT NULL,
-  descricao VARCHAR(10000) NULL DEFAULT NULL,
-  dt_postagem DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  codigo_pessoa INT(10) UNSIGNED NOT NULL,
-  PRIMARY KEY (codigo),
-  CONSTRAINT fk_novidade_pessoa
-    FOREIGN KEY (codigo_pessoa)
-    REFERENCES pessoa (codigo))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
 
 -- -----------------------------------------------------
 -- Tabela modalidade
@@ -155,7 +133,6 @@ CREATE TABLE IF NOT EXISTS turma (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
 -- -----------------------------------------------------
 -- Tabela usuario
 -- -----------------------------------------------------
@@ -173,7 +150,6 @@ CREATE TABLE IF NOT EXISTS usuario (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
 -- -----------------------------------------------------
 -- Tabela mensagem
 -- -----------------------------------------------------
@@ -185,7 +161,6 @@ CREATE TABLE IF NOT EXISTS mensagem (
   PRIMARY KEY (codigo))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 -- -----------------------------------------------------
 -- Tabela aula
@@ -203,7 +178,6 @@ CREATE TABLE IF NOT EXISTS aula (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
 -- -----------------------------------------------------
 -- Tabela aluno
 -- -----------------------------------------------------
@@ -217,39 +191,24 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 -- -----------------------------------------------------
--- Tabela desempenho
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS desempenho (
-  codigo INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  avaliacao INT UNSIGNED NULL DEFAULT 0,
-  observacao VARCHAR(500) NULL,
-  PRIMARY KEY (codigo))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
--- -----------------------------------------------------
 -- Tabela frequencia
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS frequencia (
   codigo INT UNSIGNED NOT NULL AUTO_INCREMENT,
   presente TINYINT NOT NULL DEFAULT 0,
+  avaliacao INT NULL DEFAULT 0,
   codigo_aula INT UNSIGNED NOT NULL,
-  codigo_desempenho INT UNSIGNED NOT NULL,
   codigo_aluno_matricula_turma INT(10) UNSIGNED NOT NULL,
   codigo_turma_matricula_turma SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (codigo),
   CONSTRAINT fk_frequencia_aula
     FOREIGN KEY (codigo_aula)
     REFERENCES aula (codigo),
-  CONSTRAINT fk_frequencia_desempenho
-    FOREIGN KEY (codigo_desempenho)
-    REFERENCES desempenho (codigo),
   CONSTRAINT fk_frequencia_aluno_matricula_turma
     FOREIGN KEY (codigo_aluno_matricula_turma, codigo_turma_matricula_turma)
     REFERENCES aluno_matricula_turma (codigo_pessoa_aluno, codigo_turma))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 -- -----------------------------------------------------
 -- Tabela permissao
@@ -281,7 +240,6 @@ CREATE TABLE IF NOT EXISTS usuario_permissao (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
 -- -----------------------------------------------------
 -- Tabela professor
 -- -----------------------------------------------------
@@ -293,7 +251,6 @@ CREATE TABLE IF NOT EXISTS professor (
     REFERENCES pessoa (codigo))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 -- -----------------------------------------------------
 -- Tabela professor_leciona_modalidade
@@ -311,7 +268,6 @@ CREATE TABLE IF NOT EXISTS professor_leciona_modalidade (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
 -- -----------------------------------------------------
 -- Tabela aluno_matricula_turma
 -- -----------------------------------------------------
@@ -328,7 +284,6 @@ CREATE TABLE IF NOT EXISTS aluno_matricula_turma (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
 -- -----------------------------------------------------
 -- Tabela professor_ministra_turma
 -- -----------------------------------------------------
@@ -344,7 +299,6 @@ CREATE TABLE IF NOT EXISTS professor_ministra_turma (
     REFERENCES turma (codigo))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
 
 -- -----------------------------------------------------
 -- Tabela mensagem_das_turma

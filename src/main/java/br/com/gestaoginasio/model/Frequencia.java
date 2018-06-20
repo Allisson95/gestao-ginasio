@@ -2,7 +2,6 @@ package br.com.gestaoginasio.model;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "frequencia")
@@ -23,18 +23,16 @@ public class Frequencia implements Serializable {
 	private Long codigoAlunoMatriculaTurma;
 	private Short codigoTurmaMatriculaTurma;
 	private Boolean presente = Boolean.FALSE;
+	private Integer avaliacao = Integer.valueOf(0);
 	private Aula aula;
-	private Desempenho desempenho;
 
 	public Frequencia() {
-		this.desempenho = new Desempenho();
 	}
 
 	public Frequencia(Aluno aluno, Turma turma, Aula aula) {
 		this.codigoAlunoMatriculaTurma = aluno.getCodigo();
 		this.codigoTurmaMatriculaTurma = turma.getCodigo();
 		this.aula = aula;
-		this.desempenho = new Desempenho();
 	}
 
 	@Id
@@ -73,6 +71,14 @@ public class Frequencia implements Serializable {
 		this.presente = presente;
 	}
 
+	public Integer getAvaliacao() {
+		return avaliacao;
+	}
+
+	public void setAvaliacao(Integer avaliacao) {
+		this.avaliacao = avaliacao;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "codigo_aula")
 	public Aula getAula() {
@@ -83,14 +89,9 @@ public class Frequencia implements Serializable {
 		this.aula = aula;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "codigo_desempenho")
-	public Desempenho getDesempenho() {
-		return this.desempenho;
-	}
-
-	public void setDesempenho(Desempenho desempenho) {
-		this.desempenho = desempenho;
+	@Transient
+	public Boolean faltou() {
+		return !this.presente;
 	}
 
 	@Override

@@ -73,9 +73,15 @@ public class TurmaService implements Serializable {
 
 	private Turma salvarTurma(Turma edicaoTurma, Boolean cadastrando, LocalTime hrInicioDaAula, LocalTime hrFimDaAula)
 			throws GestaoGinasioException {
+		if (edicaoTurma.getProfessores() == null || edicaoTurma.getProfessores().isEmpty()) {
+			throw new GestaoGinasioException(this.messagesBundle.getMessage("turma.salvar-professor-vazio"));
+		}
 		if (cadastrando) {
 			if (edicaoTurma.getDtInicio().isBefore(LocalDate.now())) {
 				throw new GestaoGinasioException(this.messagesBundle.getMessage("turma.salvar-data-retroativa"));
+			}
+			if (edicaoTurma.getDtFim().isBefore(edicaoTurma.getDtInicio())) {
+				throw new GestaoGinasioException(this.messagesBundle.getMessage("turma.salvar-data-fim-antes-inicio"));
 			}
 
 			edicaoTurma.setAno(Year.of(edicaoTurma.getDtInicio().getYear()));
@@ -173,6 +179,14 @@ public class TurmaService implements Serializable {
 			threads.add(t);
 		});
 		threads.forEach(t -> t.start());
+
+		threads.forEach(t -> {
+			try {
+				t.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		});
 
 	}
 

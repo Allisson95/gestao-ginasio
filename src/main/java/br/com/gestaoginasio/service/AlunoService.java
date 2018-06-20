@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import br.com.gestaoginasio.model.Aluno;
 import br.com.gestaoginasio.model.Turma;
 import br.com.gestaoginasio.repository.AlunoRepository;
+import br.com.gestaoginasio.repository.TurmaRepository;
 import br.com.gestaoginasio.util.Transacional;
 
 public class AlunoService implements Serializable {
@@ -16,6 +17,8 @@ public class AlunoService implements Serializable {
 
 	@Inject
 	private AlunoRepository alunoRepository;
+	@Inject
+	private TurmaRepository turmaRepository;
 
 	public List<Aluno> buscarTodos() {
 		return this.alunoRepository.buscarTodos();
@@ -33,6 +36,10 @@ public class AlunoService implements Serializable {
 	public List<Aluno> buscarAlunosDaTurma(Turma turma) {
 		return this.alunoRepository.buscarTodos("SELECT a FROM Aluno AS a WHERE ?0 MEMBER OF a.turmas ORDER BY a.nome",
 				turma);
+	}
+
+	public List<Turma> buscarTurmasFrequentadaPeloAluno(Aluno aluno) {
+		return this.turmaRepository.buscarTodos("SELECT t FROM Turma AS t WHERE ?0 MEMBER OF t.alunos", aluno);
 	}
 
 }
