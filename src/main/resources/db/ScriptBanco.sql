@@ -191,6 +191,22 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 -- -----------------------------------------------------
+-- Tabela aluno_matricula_turma
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS aluno_matricula_turma (
+  codigo_pessoa_aluno INT(10) UNSIGNED NOT NULL,
+  codigo_turma SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (codigo_pessoa_aluno, codigo_turma),
+  CONSTRAINT fk_aluno_matricula_turma_pessoa
+    FOREIGN KEY (codigo_pessoa_aluno)
+    REFERENCES aluno (codigo_pessoa),
+  CONSTRAINT fk_aluno_matricula_turma_turma
+    FOREIGN KEY (codigo_turma)
+    REFERENCES turma (codigo))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+-- -----------------------------------------------------
 -- Tabela frequencia
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS frequencia (
@@ -265,22 +281,6 @@ CREATE TABLE IF NOT EXISTS professor_leciona_modalidade (
   CONSTRAINT fk_professor_modalidade
     FOREIGN KEY (codigo_modalidade)
     REFERENCES modalidade (codigo))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
--- -----------------------------------------------------
--- Tabela aluno_matricula_turma
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS aluno_matricula_turma (
-  codigo_pessoa_aluno INT(10) UNSIGNED NOT NULL,
-  codigo_turma SMALLINT(5) UNSIGNED NOT NULL,
-  PRIMARY KEY (codigo_pessoa_aluno, codigo_turma),
-  CONSTRAINT fk_aluno_matricula_turma_pessoa
-    FOREIGN KEY (codigo_pessoa_aluno)
-    REFERENCES aluno (codigo_pessoa),
-  CONSTRAINT fk_aluno_matricula_turma_turma
-    FOREIGN KEY (codigo_turma)
-    REFERENCES turma (codigo))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
