@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -58,7 +59,7 @@ public class MinhasTurmasAlunoController implements Serializable {
 			if (frequencia.faltou()) {
 				totalDeFaltas += 1;
 			}
-			totalDePontos += frequencia.getAvaliacao();
+			totalDePontos += Optional.ofNullable(frequencia.getAvaliacao()).orElse(0);
 		}
 
 		try {

@@ -1,7 +1,6 @@
 package br.com.gestaoginasio.service;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,8 +33,8 @@ public class FrequenciaService implements Serializable {
 
 	public List<Frequencia> buscarPeloAlunoETurma(Aluno aluno, Turma turma) {
 		return this.frequenciaRepository.buscarTodos(
-				"SELECT f FROM Frequencia AS f JOIN FETCH f.aula AS a WHERE a.dtAula <= ?0 AND f.codigoAlunoMatriculaTurma = ?1 AND f.codigoTurmaMatriculaTurma = ?2",
-				LocalDate.now(), aluno.getCodigo(), turma.getCodigo());
+				"SELECT f FROM Frequencia AS f WHERE f.codigoAlunoMatriculaTurma = ?0 AND f.codigoTurmaMatriculaTurma = ?1",
+				aluno.getCodigo(), turma.getCodigo());
 	}
 
 }
